@@ -1,0 +1,35 @@
+{
+	"name": "Player1",
+	"maps": [
+		{
+			"name": "Player",
+			"id": "c1b6a19d-2b93-4f1e-9d5a-c65d5d5c9a11",
+			"actions": [
+				{ "name": "Accelerate", "type": "Button", "id": "a1", "expectedControlType": "Button" },
+				{ "name": "Brake", "type": "Button", "id": "a2", "expectedControlType": "Button" },
+				{ "name": "Steer", "type": "Value", "id": "a3", "expectedControlType": "Axis" }
+			],
+			"bindings": [
+				{ "path": "<Keyboard>/w", "action": "Accelerate", "groups": "Keyboard&Mouse" },
+				{ "path": "<Keyboard>/s", "action": "Brake", "groups": "Keyboard&Mouse" },
+				{ "name": "AD", "id": "b1", "path": "1DAxis", "action": "Steer", "isComposite": true, "groups": "Keyboard&Mouse" },
+				{ "name": "negative", "path": "<Keyboard>/a", "action": "Steer", "isPartOfComposite": true, "groups": "Keyboard&Mouse" },
+				{ "name": "positive", "path": "<Keyboard>/d", "action": "Steer", "isPartOfComposite": true, "groups": "Keyboard&Mouse" }
+			]
+		}
+	],
+	"controlSchemes": [
+		{
+			"name": "Keyboard&Mouse",
+			"bindingGroup": "Keyboard&Mouse",
+			"devices": [
+				{ "devicePath": "<Keyboard>", "isOptional": false },
+				{ "devicePath": "<Mouse>", "isOptional": true }
+			]
+		}
+	]
+}
+
+
+
+
