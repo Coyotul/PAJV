@@ -427,7 +427,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -90.96, y: 255}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: 457.69, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &187713052
 MonoBehaviour:
@@ -544,6 +544,7 @@ GameObject:
   - component: {fileID: 201722522}
   - component: {fileID: 201722526}
   - component: {fileID: 201722530}
+  - component: {fileID: 201722531}
   m_Layer: 0
   m_Name: Car1
   m_TagString: Untagged
@@ -682,11 +683,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c565f4069ee8bbf45b72cb55ea8d579d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CarController
-  acceleration: 10
-  maxSpeed: 20
+  acceleration: 50
+  maxSpeed: 100
   turnSpeed: 100
   brakeDeceleration: 25
   drag: 3
+--- !u!114 &201722531
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 201722521}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b206695a9ce635f4084b4b850ae296f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CarUI
+  speedText: {fileID: 570650756}
+  timerText: {fileID: 483460970}
+  showInKMH: 1
+  decimalPlaces: 0
 --- !u!1 &319997728
 GameObject:
   m_ObjectHideFlags: 0
@@ -942,7 +959,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CameraFollow
   target: {fileID: 201722525}
   offset: {x: 0, y: 6, z: -8}
-  followSpeed: 8
+  followSpeed: 60
   lookSpeed: 12
   lookAtTarget: 1
   lookAtOffset: {x: 0, y: 0, z: 0}
@@ -986,7 +1003,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -90.96, y: 210.8}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: 457.69, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &391460663
 MonoBehaviour:
@@ -1251,7 +1268,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -90.96, y: 255}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: 457.69, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &483460970
 MonoBehaviour:
@@ -1389,7 +1406,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -90.96, y: 210.8}
-  m_SizeDelta: {x: 200, y: 50}
+  m_SizeDelta: {x: 457.69, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &570650756
 MonoBehaviour:
@@ -2164,6 +2181,7 @@ GameObject:
   - component: {fileID: 1756363330}
   - component: {fileID: 1756363329}
   - component: {fileID: 1756363328}
+  - component: {fileID: 1756363334}
   m_Layer: 0
   m_Name: Car2
   m_TagString: Untagged
@@ -2183,8 +2201,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c565f4069ee8bbf45b72cb55ea8d579d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CarController
-  acceleration: 10
-  maxSpeed: 20
+  acceleration: 50
+  maxSpeed: 100
   turnSpeed: 100
   brakeDeceleration: 25
   drag: 3
@@ -2307,6 +2325,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1756363334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1756363324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b206695a9ce635f4084b4b850ae296f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CarUI
+  speedText: {fileID: 391460663}
+  timerText: {fileID: 187713052}
+  showInKMH: 1
+  decimalPlaces: 0
 --- !u!1 &2012915030
 GameObject:
   m_ObjectHideFlags: 0

@@ -15,7 +15,7 @@ public class CarController : MonoBehaviour
 	private float brakeDeceleration = 25f;
 
 	[SerializeField]
-	private float drag = 0f; // Set to 0 to eliminate friction
+	private float drag = 0.1f; // Very small drag for stability (prevents jitter at high speeds)
 
 	private Rigidbody rb;
 	private float accelerationInput;
@@ -34,40 +34,12 @@ public class CarController : MonoBehaviour
 		// Always set constraints to prevent tipping
 		rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 		
-		// Set drag to 0 to eliminate friction
+		// Set small drag for stability (prevents jitter at high speeds)
 		rb.linearDamping = drag;
-		rb.angularDamping = 0f; // Also set angular damping to 0
+		rb.angularDamping = 0.1f; // Small angular damping for stability
 		
 		// Lower center of mass to prevent tipping
 		rb.centerOfMass = new Vector3(0f, -0.5f, 0f);
-		
-		// Set up physics material for zero friction
-		SetupZeroFrictionMaterial();
-	}
-	
-	private void SetupZeroFrictionMaterial()
-	{
-		// Get all colliders on this GameObject
-		Collider[] colliders = GetComponents<Collider>();
-		
-		// Create or get a zero-friction physics material
-		PhysicsMaterial zeroFrictionMaterial = new PhysicsMaterial("ZeroFriction")
-		{
-			dynamicFriction = 0f,
-			staticFriction = 0f,
-			frictionCombine = PhysicsMaterialCombine.Minimum,
-			bounciness = 0f,
-			bounceCombine = PhysicsMaterialCombine.Minimum
-		};
-		
-		// Apply the material to all colliders
-		foreach (Collider col in colliders)
-		{
-			if (col != null)
-			{
-				col.material = zeroFrictionMaterial;
-			}
-		}
 	}
 
 	private void FixedUpdate()
@@ -75,6 +47,11 @@ public class CarController : MonoBehaviour
 		// Get current velocity
 		Vector3 currentVelocity = rb.linearVelocity;
 		currentSpeed = currentVelocity.magnitude;
+		
+		// Calculate forward direction (only horizontal movement)
+		Vector3 forward = transform.forward;
+		forward.y = 0f;
+		forward.Normalize();
 		
 		// Handle turning (only when moving)
 		if (Mathf.Abs(turnInput) > 0.01f && currentSpeed > 0.1f)
@@ -84,65 +61,50 @@ public class CarController : MonoBehaviour
 			rb.MoveRotation(rb.rotation * turn);
 		}
 		
-		// Calculate forward direction (only horizontal movement)
-		Vector3 forward = transform.forward;
-		forward.y = 0f;
-		forward.Normalize();
+		// Calculate velocity in forward direction (horizontal only)
+		Vector3 horizontalVelocity = currentVelocity;
+		horizontalVelocity.y = 0f;
+		float horizontalSpeed = horizontalVelocity.magnitude;
 		
-		// Handle acceleration
+		// Handle acceleration using forces for better stability
 		if (accelerationInput > 0f)
 		{
-			// Accelerate by directly modifying velocity
-			currentSpeed += acceleration * Time.fixedDeltaTime;
-			currentSpeed = Mathf.Min(currentSpeed, maxSpeed);
+			// Use AddForce for smoother, more stable acceleration
+			if (horizontalSpeed < maxSpeed)
+			{
+				Vector3 force = forward * acceleration * rb.mass;
+				rb.AddForce(force, ForceMode.Force);
+			}
 			
-			// Set velocity in forward direction
-			Vector3 newVelocity = forward * currentSpeed;
-			newVelocity.y = currentVelocity.y; // Preserve vertical velocity (gravity)
-			rb.linearVelocity = newVelocity;
+			// Clamp speed to maxSpeed
+			if (horizontalSpeed > maxSpeed)
+			{
+				Vector3 clampedVelocity = horizontalVelocity.normalized * maxSpeed;
+				clampedVelocity.y = currentVelocity.y; // Preserve vertical velocity
+				rb.linearVelocity = clampedVelocity;
+			}
 		}
 		// Handle braking
 		else if (brakeInput > 0f)
 		{
-			// Decelerate by reducing speed
-			currentSpeed -= brakeDeceleration * Time.fixedDeltaTime;
-			currentSpeed = Mathf.Max(0f, currentSpeed);
-			
-			// Set velocity in current direction (or forward if stopped)
-			Vector3 direction = currentVelocity.magnitude > 0.1f ? currentVelocity.normalized : forward;
-			direction.y = 0f;
-			direction.Normalize();
-			
-			Vector3 newVelocity = direction * currentSpeed;
-			newVelocity.y = currentVelocity.y; // Preserve vertical velocity
-			rb.linearVelocity = newVelocity;
-		}
-		// No input - apply natural deceleration
-		else
-		{
-			// Gradually slow down
-			if (currentSpeed > 0.1f)
+			// Apply brake force opposite to velocity direction
+			if (horizontalSpeed > 0.1f)
 			{
-				currentSpeed -= drag * Time.fixedDeltaTime;
-				currentSpeed = Mathf.Max(0f, currentSpeed);
-				
-				Vector3 direction = currentVelocity.magnitude > 0.1f ? currentVelocity.normalized : forward;
-				direction.y = 0f;
-				direction.Normalize();
-				
-				Vector3 newVelocity = direction * currentSpeed;
-				newVelocity.y = currentVelocity.y;
-				rb.linearVelocity = newVelocity;
+				Vector3 brakeDirection = -horizontalVelocity.normalized;
+				Vector3 brakeForce = brakeDirection * brakeDeceleration * rb.mass;
+				rb.AddForce(brakeForce, ForceMode.Force);
 			}
 			else
 			{
 				// Stop completely
-				Vector3 newVelocity = currentVelocity;
-				newVelocity.x = 0f;
-				newVelocity.z = 0f;
-				rb.linearVelocity = newVelocity;
+				Vector3 stopVelocity = currentVelocity;
+				stopVelocity.x = 0f;
+				stopVelocity.z = 0f;
+				rb.linearVelocity = stopVelocity;
 			}
 		}
+		// No input - natural deceleration handled by drag
+		// Drag will naturally slow down the car
 	}
 
 	public void Accelerate()
